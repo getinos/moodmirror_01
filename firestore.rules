@@ -1,9 +1,8 @@
-rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if false;
+    match /users/{userId}/moodEntries/{entryId} {
+      // Allow read and write if the request is authenticated and userId matches the authenticated user's UID
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
   }
 }

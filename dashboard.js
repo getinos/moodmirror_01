@@ -2,7 +2,6 @@ import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/fi
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-// Firebase config (same as auth.js)
 const firebaseConfig = {
   apiKey: "AIzaSyCiLb8FcoU5i098e2ODUUFC8FucrFWvCCs",
   authDomain: "moodmirror-33d1a.firebaseapp.com",
@@ -18,7 +17,6 @@ const auth = getAuth(app);
 const db = getFirestore();
 
 
-// ✅ Logout function
 window.logout = function () {
   signOut(auth)
     .then(() => {
@@ -30,7 +28,6 @@ window.logout = function () {
     });
 };
 
-// ✅ Protect route: redirect if not logged in
 onAuthStateChanged(auth, (user) => {
   if (!user) {
     window.location.href = "index.html"; // send back to login
@@ -60,22 +57,20 @@ moodButtons.forEach(button => {
     // Set the selected mood based on the clicked emoji
     selectedMood = this.textContent.trim();
 
-    // Highlight the selected mood emoji (optional visual feedback)
+    // Highlight the selected mood emoji 
     this.classList.add("bg-green-500");
   });
 });
 
 
-// Listen for auth state changes (when user logs in or out)
 onAuthStateChanged(auth, async (currentUser) => {
   if (currentUser) {
     user = currentUser; // Assign the authenticated user
     console.log("User logged in:", user.email);
     
-    // ✅ Now that user is available, render the table and calendar
     await renderMoodTable();
-    await updateMoodDistribution(); // Also update the mood distribution when user logs in
-    await updateRecentTrends(); // Update the recent trends section
+    await updateMoodDistribution(); 
+    await updateRecentTrends(); 
    
   } else {
     console.log("No user logged in.");
@@ -108,7 +103,6 @@ saveButton.addEventListener("click", async () => {
     console.log("Mood entry saved with ID:", moodEntryRef.id);
     alert("Your mood has been saved!");
 
-    // Reset state after saving
     selectedMood = null;
     moodNoteInput.value = "";
     moodButtons.forEach(btn => btn.classList.remove("bg-green-500"));
@@ -127,7 +121,7 @@ saveButton.addEventListener("click", async () => {
 // the calander part
 
 // Fetch Mood Entries from Firestore
-// Combined fetchMoodEntries function to handle both Firebase data fetching and fallback data
+// Combined fetchMoodEntries function to handle both Firebase dat and fallback data
 // Fetch mood entries
 async function fetchMoodEntries() {
   const currentUser = auth.currentUser;
@@ -160,11 +154,9 @@ async function fetchMoodEntries() {
 
 
 
-// Render Mood Entries in the Table with Fixed Height
 async function renderMoodTable() {
   const moodEntries = await fetchMoodEntries(); 
 
-  // Sort by latest first
   moodEntries.sort((a, b) => b.timestamp - a.timestamp);
 
   const tableBody = document.getElementById("mood-table-body");
@@ -186,19 +178,15 @@ async function renderMoodTable() {
       tableBody.appendChild(row);
   });
 
-  // Initialize Slider
   initializeSlider();
 }
 
-// Initialize Slider for Scrolling the Mood Entries
 function initializeSlider() {
   const moodEntriesContainer = document.querySelector("#mood-table-body");
   
-  // You can add scrolling functionality here if needed
   const scrollStep = 250; // Adjust this for the height of a row
 }
 
-// Call renderMoodTable to load the entries when the page loads
 document.addEventListener("DOMContentLoaded", renderMoodTable);
 
 
@@ -209,10 +197,8 @@ async function getMoodCount() {
     const moodEntries = await fetchMoodEntries();
     console.log("Fetched entries for count:", moodEntries.length);
 
-    // Add some test data if there are no entries (for testing visual display)
     if (moodEntries.length === 0) {
       console.log("No entries found, adding test data");
-      // You can remove this block in production
       return {
         count: {
           "😊": 2, 
@@ -246,7 +232,6 @@ async function getMoodCount() {
     return {count, total: moodEntries.length};
   } catch (error) {
     console.error("Error in getMoodCount:", error);
-    // Return some default data in case of error
     return {
       count: {
         "😊": 1, 
@@ -268,7 +253,6 @@ async function updateMoodDistribution() {
     
     if (total === 0) {
       console.log("No mood entries found");
-      // Set default minimum height for visual feedback
       document.getElementById("happy-bar").style.height = "5%";
       document.getElementById("neutral-bar").style.height = "5%";
       document.getElementById("sad-bar").style.height = "5%";
@@ -277,14 +261,12 @@ async function updateMoodDistribution() {
       return;
     }
 
-    // IMPORTANT FIX: Make sure bars are visible with enough height
     const getPercentage = mood => {
       const percentage = (count[mood] / total) * 100;
       // Ensure minimum height is visible (at least 5%)
       return Math.max(percentage, 5) + "%"; 
     };
 
-    // Debug the values before setting heights
     console.log("Setting bar heights:");
     console.log("Happy:", getPercentage("😊"));
     console.log("Neutral:", getPercentage("😐"));
@@ -292,7 +274,6 @@ async function updateMoodDistribution() {
     console.log("Angry:", getPercentage("😡"));
     console.log("Tired:", getPercentage("😴"));
 
-    // Make sure bar elements exist before setting heights
     const happyBar = document.getElementById("happy-bar");
     const neutralBar = document.getElementById("neutral-bar");
     const sadBar = document.getElementById("sad-bar");
@@ -454,7 +435,6 @@ async function updateRecentTrends() {
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const bestDayName = dayNames[bestDay];
     
-    // 4. Update UI with calculated values
     const moodNameMap = {
       "😊": "Happy",
       "😐": "Neutral",
@@ -520,10 +500,7 @@ async function updateRecentTrends() {
   }
 }
 
-// Call the function to update the UI when the page loads AND when DOM is fully loaded
 window.onload = function() {
-  // This may be redundant since onAuthStateChanged also calls updateMoodDistribution
-  // But keeping it as a fallback
   setTimeout(() => {
     updateMoodDistribution();
     updateRecentTrends();
@@ -531,19 +508,15 @@ window.onload = function() {
   }, 1000); // Short delay to ensure DOM is fully ready
 };
 
-// Also run when DOM is fully loaded
 document.addEventListener("DOMContentLoaded", function() {
   setTimeout(() => {
     updateMoodDistribution();
     updateRecentTrends();
     console.log("DOMContentLoaded: Running updates");
-  }, 1000); // Short delay to ensure Firebase is initialized
-  
-  // Add global reference to functions for debug button
+  }, 1000); 
   window.updateMoodDistribution = updateMoodDistribution;
   window.updateRecentTrends = updateRecentTrends;
   
-  // Add event listener for the test button
   const testButton = document.getElementById('test-mood-button');
   if (testButton) {
     testButton.addEventListener('click', function() {
