@@ -14,18 +14,18 @@
     <h2 class="text-2xl font-semibold text-red-600 text-center">Sign Up</h2>
     <input type="email" id="signup-email" placeholder="Email" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400">
     <input type="password" id="signup-password" placeholder="Password" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400">
-    <button class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md transition">Sign Up</button>
+    <button onclick="signUp()" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md transition">Sign Up</button>
 
     <h2 class="text-2xl font-semibold text-red-600 text-center">Login</h2>
     <input type="email" id="login-email" placeholder="Email" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400">
     <input type="password" id="login-password" placeholder="Password" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-400">
-    <button class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md transition">Login</button>
+    <button onclick="login()" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md transition">Login</button>
 
-    <button class="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-md transition">Logout</button>
+    <button onclick="logout()" class="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-md transition">Logout</button>
 
     <p id="user-status" class="text-center text-sm text-gray-600"></p>
   </div>
-  <script src="./auth.js"></script>
+  <script type="module" src="./auth.js"></script>
 </body>
 
 </html>
